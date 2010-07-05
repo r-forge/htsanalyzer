@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><script language="javascript">
+<!--
+var bluecoat_allow_popup = false;
+var bluecoat_original_open = window.open;
+window.open = bluecoat_gated_open;
+function bluecoat_gated_open(url, name, parms)
+{
+    if (bluecoat_allow_popup) {
+        // A navigation event is restricted to opening at most one window.
+        bluecoat_allow_popup = false;
+        return bluecoat_original_open(url, name, parms);
+    } else if (window.event && window.event.shiftKey) {
+        // Popups can open freely while the shift key is held down.
+        // Only works in IE, and even then, not inside a Java app.
+        return bluecoat_original_open(url, name, parms);
+    } else {
+        // alert("blocked popup ('" + url + "', '" + name + "')");
+        window.status='blocked popup window -- use CTRL Refresh to see all popups';
+        return null;
+    }
+}
+function bluecoat_stop_error()
+{
+    return true;
+}
+window.onerror = bluecoat_stop_error;
+function bluecoat_fixhandler(elem, attr)
+{
+    var h = elem.getAttribute(attr);
+    if (h != null) {
+        if (typeof(h) == "string") {
+            if (h.substring(0,11) == "javascript:") {
+                if (h.substring(11,13) != "//") {
+                    elem.setAttribute(attr,
+                        "javascript:bluecoat_allow_popup=true;"
+                        + h.substring(11)
+                        + ";void(bluecoat_allow_popup=false)");
+                }
+            } else {
+                elem.setAttribute(attr,
+                    "bluecoat_allow_popup=true;try{\n"
+                    + h
+                    + "\n}finally{bluecoat_allow_popup=false;}");
+            }
+        } else {
+            elem.setAttribute(attr,
+                function() {
+                    bluecoat_allow_popup = true;
+                    var result = h.call(elem);
+                    bluecoat_allow_popup = false;
+                    return result;
+                });
+        }
+    }
+}
+function bluecoat_fixpopups()
+{
+    var i;
+    var j;
+    var ls = document.links;
+    for (i = 0; i < ls.length; ++i) {
+        var link = ls[i];
+        if (link.protocol == "javascript:"
+            && link.href.substring(11,13) != "//")
+        {
+            link.href =
+                "javascript:bluecoat_allow_popup=true;"
+                + link.href.substring(11)
+                + ";void(bluecoat_allow_popup=false)";
+        }
+        bluecoat_fixhandler(link, "onclick");
+        bluecoat_fixhandler(link, "onmousedown");
+        bluecoat_fixhandler(link, "onmouseup");
+    }
+    var fs = document.forms;
+    for (i = 0; i < fs.length; ++i) {
+        var f = fs[i];
+        bluecoat_fixhandler(f, "onsubmit");
+        var es = f.elements;
+        for (j = 0; j < es.length; ++j) {
+            bluecoat_fixhandler(es[j], "onclick");
+            bluecoat_fixhandler(es[j], "onmousedown");
+            bluecoat_fixhandler(es[j], "onmouseup");
+        }
+    }
+}
+//-->
+</script>
+
+
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="description" content="The Markowetz lab at Cancer Research UK's Cambridge Research Institute develops algorithms and statistics to better understand biological and clinical datasets and to leverage complex and heterogeneous data sources for biomedical research.">
+	<meta name="keywords" content="your,keywords,goes,here">
+	<meta name="author" content="Your Name">
+	<link rel="stylesheet" type="text/css" href="HTSanalyzeR_files/andreas08.css" title="andreas08" media="screen,projection">
+	<title>Markowetz lab | software | HTSanalyzeR</title></head><body>
+<div id="container">
+  <div id="header">
+    <h1>the Markowetz lab</h1>
+    <h2><a href="http://www.cambridgecancer.org.uk/">Cancer Research UK Cambridge Research Institute</a></h2>
+  </div>
+
+  <div id="navigation">
+    <ul>
+      <li><a href="http://www.markowetzlab.org/index.html">home</a></li>
+      <li><a href="http://www.markowetzlab.org/team.html">team</a></li>
+      <li><a href="http://www.markowetzlab.org/publications.html">publications</a></li>
+      <li class="selected"><a href="http://www.markowetzlab.org/software/index.html">software</a></li>
+      <li><a href="http://www.markowetzlab.org/events.html">events</a></li>
+      <li><a href="http://www.markowetzlab.org/partners.html">partners</a></li>
+      <li><a href="http://www.markowetzlab.org/contact.html">contact</a></li>
+    </ul>
+  </div>
+
+	<div id="content">
+		<h2><i>HTSanalyzeR</i> - Network analysis of high-throughput screens</h2>
+
+		<!--
+		<p>
+		<img src="../pics/goatcomputer.png"  width="110" height="80" alt="HTSanalyzeR" title="You say: Why a goat? I say: Why not?"></img>
+		</p>		
+<p>
+This R/Bioconductor package does gene set over-representation of hits, gene set enrichment analysis and network analysis on data sets from hight throughput screens such as RNAi screens. The overrepresentation analysis is done both by hypergeometric test and GSEA (<a href="http://www.ncbi.nlm.nih.gov/pubmed/16199517">Subramanian et al., 2005</a>).  The network analysis uses data from The Biogrid database and algorithms from the BioNet package (<a href="http://www.ncbi.nlm.nih.gov/pubmed/20189939">Beisser et al., 2010</a>)
+</p>
+-->
+
+<p>
+<img src="HTSanalyzeR_files/goatcomputer.png" class="leftno" alt="HTSanalyzeR" title="You say: Why a goat? I say: Why not?" width="150">
+Functional genomics has demonstrated considerable success in inferring
+the inner working of a cell through analysis of its response to various
+perturbations. In recent years several technological advances have
+pushed high-throughput screens (HTS) to the forefront of functional
+genomics.
+</p>
+
+<p>
+The software package <b>HTSanalyzeR</b> provides state-of-the-art analysis methods for HTS in a unified framework.
+Features of the current release (which is under review at Bioconductor) include:
+</p>
+
+<ul>
+<li>Bioconductor compliant R package</li>
+<li>Works hand in hand with <a href="http://www.dkfz.de/signaling/cellHTS/">cellHTS2</a>, the leading package for pre-processing of cell-based high-throughput screens.</li>
+<li>Output as HTML pages in easy to interpret list and figures.</li>
+<li>Gene set and pathway analysis</li>
+	<ul>
+	<li>based on gene sets defined in <a href="http://www.broadinstitute.org/gsea/msigdb/index.jsp">MSigDB</a> and <a href="http://www.geneontology.org/">Gene Ontology</a></li>
+	<li>Overrepresentation analysis of hits based on hyper-geometric distribution</li>
+	<li>Cutoff free <a href="http://www.ncbi.nlm.nih.gov/pubmed/16199517">Gene Set Enrichment Analysis</a></li>
+	</ul>
+<li>Network enrichment analysis</li>
+	<ul>
+	<li>Interface to <a href="http://thebiogrid.org/">BioGRID</a> database</li>
+	<li>Identifies rich subnetworks using the <a href="http://www.ncbi.nlm.nih.gov/pubmed/20189939">BioNet</a> algorithm</li>
+	</ul>
+	
+</ul>
+
+
+<h3>Download</h3>
+
+<p>
+You can download the developer version as <a href="http://www.markowetzlab.org/software/HTSanalyzeR_1.1.1.tar.gz">HTSanalyzeR_1.1.1.tar.gz</a>
+</p>
+
+
+<h3>References:</h3>
+	<ul>
+
+	<li>
+	<b>HTSanalyzeR: an R/Bioconductor package for network analysis of high throughput screens</b><br>
+	John C. Rose, Camille D.A. Terfve and Florian Markowetz
+	<i> (in preparation), 2010</i>
+	</li>
+
+	<li><b>How to understand the cell by breaking it: network analysis of gene perturbation screens</b><br> 
+	<u>F. Markowetz</u>, <i>PLoS Comp Bio, 2010 Feb 26;6(2):e1000655</i>.<br>
+	[ <a href="http://www.ncbi.nlm.nih.gov/pubmed/20195495">PMID:20195495</a> | <a href="http://dx.doi.org/10.1371/journal.pcbi.1000655">doi:10.1371/journal.pcbi.1000655</a> | <a href="http://arxiv.org/abs/0910.2938">arXiv:0910.2938</a> ]
+	</li>
+
+	</ul>
+
+
+</div>   
+        
+        
+	<div id="subcontent">
+
+
+		<div class="box">		
+		<img src="HTSanalyzeR_files/logo-R.png" title="R project for statistical computing" alt="R" class="rightno" width="41">
+		<h2>Developers</h2>
+		
+				
+		<ul>
+			<li><a href="http://www.markowetzlab.org/team.html">Jack Rose</a></li>
+			<li><a href="http://www.markowetzlab.org/team.html">Camille Terfve</a></li>
+		</ul>          
+		</div>
+
+		
+		<div class="box selected">		
+		<h2>Download</h2>		
+		<p>
+		You can download the developer version as <a href="http://www.markowetzlab.org/software/HTSanalyzeR_1.1.1.tar.gz">HTSanalyzeR_1.1.1.tar.gz</a>
+		</p>
+		
+
+		<a href="http://www.bioconductor.org/"><img src="HTSanalyzeR_files/logo_bioc2.png" title="BioConductor" alt="BioConductor" width="178"></a>
+		</div>
+
+		<div class="box">
+		<h2>Other software</h2>
+		<ul>
+		<li><a href="http://www.markowetzlab.org/software/nem.html">Nested Effects Models</a></li>
+		<li><a href="http://www.markowetzlab.org/software/HTSanalyzeR.html">HTSanalyzeR</a></li>
+		<li><a href="http://www.markowetzlab.org/software/networks.html">dyNet</a></li>
+		<li><a href="#">DeregNet</a></li>
+		</ul>
+		</div>
+		
+	</div>
+
+	<div id="footer">
+		<p>© 2009 Florian Markowetz | <a href="http://andreasviklund.com/">Design</a> | <a href="http://www.markowetzlab.org/imprint.html">Imprint</a> </p>
+	</div>
+
+	</div>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="HTSanalyzeR_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-9994810-1");
+pageTracker._trackPageview();
+} catch(err) {}</script><script language="javascript">
+<!--
+bluecoat_old_onload = window.onload;
+window.onload = function() {
+    if (bluecoat_old_onload != null) {
+		try {
+			bluecoat_old_onload();
+		} catch (e) {
+		}
+	}
+bluecoat_fixpopups();
+};
+//-->
+</script>
+<div style="margin: 5px; background: yellow none repeat scroll 0% 0%; position: absolute; left: 0pt; top: 0pt; z-index: 1000; font-family: arial; font-size: 13px; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; opacity: 0.9; display: none;" id="dictdiv"></div><div id="dictaudio"></div></body></html>
