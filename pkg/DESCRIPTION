@@ -1,0 +1,14 @@
+Package: HTSanalyzeR
+Type: Package
+Title: Network and gene set enrichment analysis pipeline for high throughput screens.
+Version: 1.1.3
+Date: 2010-06-22
+Author: John C. Rose <jcr53@cam.ac.uk>, Camille Terfve <cdat2@cam.ac.uk>,  Xin Wang <Xin.Wang@cancer.org.uk>, Florian Markowetz <Florian.Markowetz@cancer.org.uk>
+Maintainer: Xin Wang <Xin.Wang@cancer.org.uk>
+Depends:GSEABase, BioNet, cellHTS2,RankProd
+Imports:GSEABase, BioNet, cellHTS2, AnnotationDbi, biomaRt
+Suggests: KEGG.db, GO.db, org.Dm.eg.db, GOstats, org.Ce.eg.db, org.Mm.eg.db, org.Rn.eg.db, org.Hs.eg.db
+Description: This package does gene set over-representation of hits, gene set enrichment analysis and network analysis on data sets from hight throughput screens such as RNAi screens. The overrepresentation analysis is done both by hypergeometric test and GSEA (Subramanian et al., PNAS 2005).  The network analysis uses data from The Biogrid database and algorithms from the BioNet package (Beisser et al., Bioinformatics 2010)
+License: Artistic-2.0
+LazyLoad: yes
+Packaged: 2010-07-07 14:16:44 UTC; camilleterfve
