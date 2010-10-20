@@ -2,7 +2,7 @@
 #It is a wrapper around the whole network analysis process in this package.
 networkAnalysis <-
 function(
-	cellHTSobject,
+	x,
 	annotationColumn="GeneID",
 	controls="neg",
 	alternative=c("two.sided","less","greater"),
@@ -28,7 +28,16 @@ function(
 	#that the  'controls' parameter matches a status in the 'controlStatus' column of the cellHTS cellHTSobject
 	#that the 'alternative' parameter has been correctly set 	
 	cat("-Performing network analysis ... \n")
-	test.stats<-cellHTS2OutputStatTests(cellHTSobject=cellHTSobject,alternative=alternative,tests=tests)
+	if(is(x,"cellHTS"))
+		test.stats<-cellHTS2OutputStatTests(cellHTSobject=x,alternative=alternative,tests=tests)
+	else {
+		if(!is.vector(x) || is.null(names(x))) {
+			stop("x should be a named vector including p values if it is not a cellHTS object")
+		} else {
+			x<-x[which(!is.na(names(x)))]
+			test.stats<-x
+		}
+	}		
 	#Check that the species is correctly specified (corresponds to a single character string 
 	#that can be matched to an input for the AnnotationConvertor functions)
 	if(!is.character(species) || length(species) != 1) 
@@ -48,7 +57,14 @@ function(
 		if(species == "Hs") test.stats.entrez<-mammalAnnotationConvertor(geneList=test.stats,species=species,initialIDs=initialIDs,finalIDs="Entrez.gene",verbose=verbose)
 		if(species == "Rn") test.stats.entrez<-mammalAnnotationConvertor(geneList=test.stats,species=species,initialIDs=initialIDs,finalIDs="Entrez.gene",verbose=verbose)
 		if(species == "Mm") test.stats.entrez<-mammalAnnotationConvertor(geneList=test.stats,species=species,initialIDs=initialIDs,finalIDs="Entrez.gene",verbose=verbose)
-		}
+	}
+	if(is.vector(x) && !is.matrix(test.stats.entrez)) {
+		test.stats.entrez<-as.matrix(test.stats.entrez)
+		colnames(test.stats.entrez)<-"none"
+		columns="none"
+	}
+		
+	
 	#create folders for biogrid date downloading
 	biogridDataDir=file.path(reportdir,"Data")
 	if(!file.exists(reportdir)) 

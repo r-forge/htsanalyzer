@@ -29,7 +29,7 @@ HTSanalyzeR<-function(
 	#check that 'normCellHTSobject' is a cellHTS cellHTSobject
 	#if(!is(x, "cellHTS")) stop("The argument 'x' is not a cellHTS object")
 	HTSanalysis4CellHTS2(
-		normCellHTSobject=x,
+		x=x,
 		scoreSign=scoreSign,
 		scoreMethod=scoreMethod,
 		summarizeMethod=summarizeMethod,
