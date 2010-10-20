@@ -1,5 +1,5 @@
 HTSanalysis4CellHTS2 <- function(
-		x,
+		normCellHTSobject,
 		scoreSign="-",
 		scoreMethod="zscore",
 		summarizeMethod="mean",
@@ -28,44 +28,35 @@ HTSanalysis4CellHTS2 <- function(
 		reportdir="HTSanalyzerReport",
 		verbose=TRUE
 	) {
-	#check that 'x' is a cellHTS cellHTSobject
-	#if(class(x) != "cellHTS")
-	#	stop("The argument 'x' is not a cellHTS object")
-	data4enrich<-NULL
-	if(is(x,"cellHTS")) {
-		#check that the cellHTS2 cellHTSobject is in the right format 
-		#(configured, so that we know which rows are samples and which are controls
-		#annotated, so that we can match names of constructs
-		#normalized, but not scored)
-		if(!state(x)["configured"]) 
-			stop("The cellHTS object should be configured to perform the statistical tests")
-		if(!state(x)["normalized"]) 
-			warning("Your cellHTS object has not been normalized, this could impact the results of these tests",immediate.=TRUE)
-		if(state(x)["scored"]) 
-			stop("This cellHTS object has been scored; the statistical analysis should be performed on the normalized signal intensities",immediate.=TRUE)
-		if(!state(x)["annotated"]) 
-			stop("This cellHTS object has not been annotated",immediate.=TRUE)
-		#check that the annotationColumn has been specified as a single character string
-		if(!is.character(annotationColumn) || length(annotationColumn) !=1 ) 
-			stop("The 'annotationColumn' parameter does not have the right format")
-		#check that the annotationColumn matches a column in the fData(cellHTSobject) dataframe	
-		if(!(annotationColumn %in% colnames(fData(x)))) 
-			stop("The 'annotationColumn' parameter does not match to any column in your cellHTS object")
-		#Prepare the data for the enrichment analysis: 
-		#1.we need a scored cellHTS2 object
-		scoredCellHTSobject<-scoreReplicates(x,sign=scoreSign,method=scoreMethod)
-		scoredCellHTSobject<-summarizeReplicates(scoredCellHTSobject,summary=summarizeMethod)
-		#2.we need a named vector, with no NA names
-		data4enrich<-as.vector(Data(scoredCellHTSobject));
-		names(data4enrich)<-fData(scoredCellHTSobject)[,annotationColumn] 	
-	} else {
-		#check if cellHTS2 is a named vector
-		if(!is.vector(x) || is.null(names(x)))
-			stop("x should be a named vector including phenotypes if it is not a cellHTS object")
-		data4enrich <- x
-	}	
-	#no NA names in data4enrich
-	data4enrich<-data4enrich[which(!is.na(names(data4enrich)))]
+	#check that 'normCellHTSobject' is a cellHTS cellHTSobject
+	if(class(normCellHTSobject) != "cellHTS") 
+		stop("The argument 'normCellHTSobject' is not a cellHTS object")
+	#check that the cellHTS2 cellHTSobject is in the right format 
+	#(configured, so that we know which rows are samples and which are controls
+	#annotated, so that we can match names of constructs
+	#normalized, but not scored)
+	if(!state(normCellHTSobject)["configured"]) 
+		stop("The cellHTS object should be configured to perform the statistical tests")
+	if(!state(normCellHTSobject)["normalized"]) 
+		warning("Your cellHTS object has not been normalized, this could impact the results of these tests",immediate.=TRUE)
+	if(state(normCellHTSobject)["scored"]) 
+		stop("This cellHTS object has been scored; the statistical analysis should be performed on the normalized signal intensities",immediate.=TRUE)
+	if(!state(normCellHTSobject)["annotated"]) 
+		stop("This cellHTS object has not been annotated",immediate.=TRUE)
+	#check that the annotationColumn has been specified as a single character string
+	if(!is.character(annotationColumn) || length(annotationColumn) !=1 ) 
+		stop("The 'annotationColumn' parameter does not have the right format")
+	#check that the annotationColumn matches a column in the fData(cellHTSobject) dataframe	
+	if(!(annotationColumn %in% colnames(fData(normCellHTSobject)))) 
+		stop("The 'annotationColumn' parameter does not match to any column in your cellHTS object")
+	#Prepare the data for the enrichment analysis: 
+	#1.we need a scored cellHTS2 object
+	scoredCellHTSobject<-scoreReplicates(normCellHTSobject,sign=scoreSign,method=scoreMethod)
+	scoredCellHTSobject<-summarizeReplicates(scoredCellHTSobject,summary=summarizeMethod)
+	#2.we need a named vector, with no NA names
+	data4enrich<-as.vector(Data(scoredCellHTSobject));
+	names(data4enrich)<-fData(scoredCellHTSobject)[,annotationColumn] 
+	data4enrich<-data4enrich[-which(is.na(names(data4enrich)))]
 	#3.we need Entrez.gene identifiers
 	if(initialIDs != "Entrez.gene") {
 	#This checks that the species argument corresponds to a single character string 
@@ -101,7 +92,7 @@ HTSanalysis4CellHTS2 <- function(
 		data4enrichentrez<-data4enrich
 		names(data4enrichentrez)<-names(data4enrich)
 	}
-	data4enrichentrez<-data4enrichentrez[which(!is.na(data4enrichentrez))]
+	data4enrichentrez<-data4enrichentrez[-which(is.na(data4enrichentrez))]
 	#4.we need 	to remove the duplicates, and order the gene list
 	#This function will check that the method is correctly specified
 	data4enrichentrez<-duplicateRemover(geneList=data4enrichentrez,method=duplicateRemoverMethod,absValue=orderAbsValue)
@@ -141,7 +132,7 @@ HTSanalysis4CellHTS2 <- function(
 	#This function will test that the controls argument is correctly set
 	#that the alternative, columns, tests arguments are correctly set
 	test.module<-networkAnalysis(
-		x=x,
+		cellHTSobject=normCellHTSobject,
 		annotationColumn=annotationColumn,
 		controls=nwStatsControls,
 		alternative=nwStatsAlternative,
@@ -160,7 +151,7 @@ HTSanalysis4CellHTS2 <- function(
 	)			
 	#Now we can write the report
 	writeReportHTSA(
-		experimentName=deparse(substitute(x)),
+		experimentName=deparse(substitute(normCellHTSobject)),
 		enrichmentAnalysis=enrichment.analysis,
 		cutoffHits=cutoffHitsEnrichment,
 		hits=names(data4enrichentrez)[which(abs(data4enrichentrez)>cutoffHitsEnrichment)],
@@ -181,7 +172,7 @@ HTSanalysis4CellHTS2 <- function(
 		genetic=nwAnalysisGenetic,
 		networkObject=networkObject,
 		nGseaPlots=nGseaPlots,
-		geneListName=paste("scored (",scoreMethod,")",deparse(substitute(x))),
+		geneListName=paste("scored (",scoreMethod,")",deparse(substitute(normCellHTSobject))),
 		whichSetIsKEGGIds=whichSetIsKEGGIds,
 		whichSetIsGOIds=whichSetIsGOIds,
 		reportdir=reportdir

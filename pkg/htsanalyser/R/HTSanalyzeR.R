@@ -27,9 +27,9 @@ HTSanalyzeR<-function(
 	nGseaPlots=10
 ) {
 	#check that 'normCellHTSobject' is a cellHTS cellHTSobject
-	#if(!is(x, "cellHTS")) stop("The argument 'x' is not a cellHTS object")
+	if(!is(x, "cellHTS")) stop("The argument 'x' is not a cellHTS object")
 	HTSanalysis4CellHTS2(
-		x=x,
+		normCellHTSobject=x,
 		scoreSign=scoreSign,
 		scoreMethod=scoreMethod,
 		summarizeMethod=summarizeMethod,
