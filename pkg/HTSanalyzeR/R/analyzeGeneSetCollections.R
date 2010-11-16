@@ -1,8 +1,7 @@
 analyzeGeneSetCollections <-
 function(ListOfGeneSetCollections,
 			GeneList,hits,pAdjustMethod="BH",p.value.cutoff=0.05,
-			npermutations=1000, min.gene.set.size=15,exponent=1,
-			whichSetIsKEGGIds="none",whichSetIsGOIds="none",verbose=TRUE) {
+			npermutations=1000, min.gene.set.size=15,exponent=1,verbose=TRUE) {
 	##Check format of inputs
 	if(!is.list(ListOfGeneSetCollections))
 		stop("GeneSetCollections must be supplied as elements of a list")

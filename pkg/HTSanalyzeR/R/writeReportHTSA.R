@@ -178,7 +178,7 @@ writeReportHTSA <- function(experimentName, enrichmentAnalysis,
 	cat("\n \t \t <UL> \n \t \t \t <LI>", append = TRUE, file = htmlfile)
 	#check that the arguments cutoffHits, p.adj.method, min.gene.set.size, nPermutations have length one	
 	if(length(cutoffHits) != 1  || length(p.adj.method) != 1 || length(min.gene.set.size) != 1 || length(nPermutations) != 1) 
-		warning("Thearguments cutoffHits, p.adj.method, min.gene.set.size, nPermutations should be of length one")
+		warning("The arguments cutoffHits, p.adj.method, min.gene.set.size, nPermutations should be of length one")
 	cat(paste("Cutoff for hits: ",cutoffHits,sep=""), append = TRUE, file = htmlfile)
 	cat(paste("\n \t \t \t <LI> MHT correction method: ",p.adj.method), append = TRUE, file = htmlfile)
 	cat(paste("\n \t \t \t <LI> Minimum gene set size: ",min.gene.set.size), append = TRUE, file = htmlfile)
