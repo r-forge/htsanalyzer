@@ -1,0 +1,50 @@
+Package: HTSanalyzeR
+Type: Package
+Title: Network and gene set enrichment analyses for high throughput screens.
+Version: 2.1.0
+Date: 2010-12-06
+Author: Xin Wang <Xin.Wang@cancer.org.uk>, Camille Terfve <cdat2@cam.ac.uk>, John C. Rose <jcr53@cam.ac.uk>, Florian Markowetz <Florian.Markowetz@cancer.org.uk>
+Maintainer: Xin Wang <Xin.Wang@cancer.org.uk>
+Depends: graph, GSEABase, BioNet, cellHTS2, RankProd, methods
+Imports: graph, GSEABase, BioNet, cellHTS2, AnnotationDbi, biomaRt
+Suggests: KEGG.db, GO.db, org.Dm.eg.db, GOstats, org.Ce.eg.db, org.Mm.eg.db, org.Rn.eg.db, org.Hs.eg.db, snow
+Description: This package does gene set over-representation of hits, gene set enrichment analysis and network analysis on data sets such as high-throughput RNAi screens. The over-representation analysis is done both by hypergeometric test and GSEA (Subramanian et al., PNAS 2005). The network analysis identifies enriched subnetworks based on algorithms from the BioNet package (Beisser et al., Bioinformatics 2010)
+License: Artistic-2.0
+biocViews: CellBasedAssays, Bioinformatics, MultipleComparisons
+Collate:
+	paraCheck.R
+	aggregatePvals.R
+	analyzeGeneSetCollections.R
+	annotationConvertor.R
+	biogridDataDownload.R
+	celAnnotationConvertor.R
+	cellHTS2OutputStatTests.R
+	collectionGsea.R
+	drosoAnnotationConvertor.R
+	duplicateRemover.R
+	FDRcollectionGsea.R
+	GOGeneSets.R
+	gseaPlots.R
+	gseaScores.R
+	gseaScoresBatch.R
+	gseaScoresBatchParallel.R
+	hyperGeoTest.R
+	HTSanalyzeR4cellHTS2.R
+	HTSanalyzeR-internal.R
+	KeggGeneSets.R
+	mammalAnnotationConvertor.R
+	multiHyperGeoTest.R
+	networkAnalysis.R
+	networkPlot.R
+	classUnions.R
+	AllGenerics.R
+	AllClasses.R
+	GSCA-methods.R
+	NWA-methods.R
+	pairwiseGsea.R
+	pairwiseGseaPlot.R
+	pairwisePhenoMannWith.R
+	permutationPvalueCollectionGsea.R
+	writeHtml.R
+	writeReportHTSA.R
+LazyLoad: yes

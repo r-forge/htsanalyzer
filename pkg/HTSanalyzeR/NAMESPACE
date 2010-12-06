@@ -1,0 +1,51 @@
+import("graph", "GSEABase","cellHTS2","BioNet","biomaRt")
+import("AnnotationDbi")
+exportClasses(
+	"GSCA",
+	"NWA"
+)
+export(
+	   "aggregatePvals",
+	   "annotationConvertor",
+	   "biogridDataDownload", 
+       "celAnnotationConvertor",
+       "cellHTS2OutputStatTests",
+       "collectionGsea",
+       "drosoAnnotationConvertor",
+       "duplicateRemover",
+       "FDRcollectionGsea",
+       "analyzeGeneSetCollections",
+       "GOGeneSets",
+       "gseaPlots",
+       "gseaScores",
+       "gseaScoresBatch",
+       "gseaScoresBatchParallel",
+       "HTSanalyzeR4cellHTS2",
+       "KeggGeneSets",
+       "mammalAnnotationConvertor",
+       "multiHyperGeoTest",
+       "networkAnalysis",
+       "networkPlot",
+	   "pairwiseGsea",
+	   "pairwiseGseaPlot",
+	   "pairwisePhenoMannWith",
+       "permutationPvalueCollectionGsea",
+       "hyperGeoTest",
+       "writeReportHTSA")
+
+exportMethods(
+	"analyze",
+	"reportAll",
+	"plotSubNet",
+	"viewSubNet",
+	"plotGSEA",
+	"viewGSEA",
+    "writeHits",	
+    "getTopGeneSets",	
+	"interactome",
+	"preprocess",
+	"show",
+	"summarize",
+	"report"
+)
+
